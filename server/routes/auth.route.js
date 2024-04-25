@@ -27,4 +27,37 @@ router.post("/register", async (req, res) => {
     }
 });
 
+router.post("/login", async (req, res)=>{
+
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({email: email});
+        if (!user) {
+            return res.status(404).json({
+                message: "Email does not exist"
+            })
+        }
+
+        const comparedPassword = await bcrypt.compare(password, user.password);
+        if (!comparedPassword) {
+            return res.status(404).json({
+                message: "Incorrect email or password"
+            })
+        }
+        res.status(200).json({
+            data: user,
+            message: "Login successful!",
+        });
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Login failed",
+            error: error,
+        })  
+    }
+    
+});
+
 module.exports = router;
