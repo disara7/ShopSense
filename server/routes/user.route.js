@@ -1,5 +1,5 @@
-const { updateUser } = require("../controllers/user.controller");
-const verifyToken = require("../middleware/verifyToken");
+const { updateUser, deleteUser } = require("../controllers/user.controller");
+const {verifyToken, verifyAdmin} = require("../middleware/verifyToken");
 
 const router = require("express").Router();
 
@@ -8,4 +8,5 @@ router.get("/get-user", (req,res)=>{
 })
 
 router.put("/update/:id", verifyToken, updateUser);
+router.delete("/delete/:id", verifyAdmin, deleteUser);
 module.exports = router;

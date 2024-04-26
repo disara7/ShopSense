@@ -16,4 +16,17 @@ const verifyToken = (req, res, next)=>{
     }
 };
 
-module.exports = verifyToken;
+const verifyAdmin = (req, res, next) => {
+    verifyToken(req, res, ()=>{
+        if(req.user.isAdmin){
+            next();
+        }else{
+            return res.status(500).send("Request cannot be completed because you are not an Admin");
+        }
+    });
+};
+
+module.exports = {
+    verifyToken,
+    verifyAdmin,
+};
