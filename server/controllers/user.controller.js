@@ -39,8 +39,33 @@ const deleteUser = async (req, res) => {
     }
 };
 
+const getAdmin = async (req, res) => {
+    try {
+        const admin = User.findById(req.params.id);
+        if (!admin) {
+            return res.status(404).json({
+                message: "Admin not found",
+            });
+        }
+
+        res.status(200).json({
+            message: "Admin detected",
+            data: admin,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Query failed",
+            error: error,
+        });
+        
+    }
+
+};
+
 
 module.exports = {
     updateUser,
     deleteUser,
+    getAdmin
 };
