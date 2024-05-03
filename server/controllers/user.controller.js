@@ -70,7 +70,7 @@ const getAllUsers = async (req, res) => {
         const { password, ...info } = users._doc;
         res.status(200).json({
             message: "Users successfully detected",
-            data: info,
+            data: users,
         });
     } catch (error) {
         console.log(error);
