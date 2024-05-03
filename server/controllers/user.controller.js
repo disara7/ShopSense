@@ -41,16 +41,36 @@ const deleteUser = async (req, res) => {
 
 const getAdmin = async (req, res) => {
     try {
-        const admin = User.findById(req.params.id);
+        const admin = await User.findById(req.params.id);
         if (!admin) {
             return res.status(404).json({
                 message: "Admin not found",
             });
         }
-
+        const { password, ...info } = admin._doc;
         res.status(200).json({
             message: "Admin detected",
-            data: admin,
+            data: info,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Query failed",
+            error: error,
+        });
+        
+    }
+
+};
+
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+
+        const { password, ...info } = users._doc;
+        res.status(200).json({
+            message: "Users successfully detected",
+            data: info,
         });
     } catch (error) {
         console.log(error);
@@ -67,5 +87,6 @@ const getAdmin = async (req, res) => {
 module.exports = {
     updateUser,
     deleteUser,
-    getAdmin
+    getAdmin,
+    getAllUsers
 };
