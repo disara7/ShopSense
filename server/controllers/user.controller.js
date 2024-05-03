@@ -64,8 +64,11 @@ const getAdmin = async (req, res) => {
 };
 
 const getAllUsers = async (req, res) => {
+    const query = req.query.latest;
     try {
-        const users = await User.find();
+        const users = query 
+        ? await User.find().sort({_id: -1 }).limit(3) 
+        : await User.find();
 
         const { password, ...info } = users._doc;
         res.status(200).json({
@@ -78,15 +81,44 @@ const getAllUsers = async (req, res) => {
             message: "Query failed",
             error: error,
         });
-        
     }
-
 };
 
+const getUserStats = async (req, res) => {
+    try {
+        const date = new Date();
+        const lastYear = new Date(date.setFullYear(date.getFullYear() -1));
+
+        const userStats = await User.aggregate([
+            {
+                $match: {createAt: {$get: lastYear}},
+            },
+            {
+                $project: {
+                    month: {$month: "$createdAt"},
+                },
+            },
+            {
+                $group: {
+                    _id: "$month",
+                    total: {$sum: 1},
+                },
+            }
+        ])
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "User status acquisition error!",
+            error: error.message
+        })
+        
+    }
+}
 
 module.exports = {
     updateUser,
     deleteUser,
     getAdmin,
-    getAllUsers
+    getAllUsers,
+    getUserStats,
 };
