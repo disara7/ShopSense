@@ -104,7 +104,11 @@ const getUserStats = async (req, res) => {
                     total: {$sum: 1},
                 },
             }
-        ])
+        ]);
+        res.status(200).json({
+            message: "User Data Retrieval Successful!",
+            userStats
+        })
     } catch (error) {
         console.log(error);
         res.status(500).json({
